@@ -1,12 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css ">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
-  />
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"/>
     <title>To-Do</title>
 </head>
 <body>
@@ -14,17 +14,32 @@
     <h1 class="title">To Do List</h1>
     
     <div class="todo-header">
-        <input type="text" placeholder="Add" id="in">
-        <button id="btn"><i class="fas fa-plus"></i></button>
-        <button id="btn2" class="btn2"><i class="fas fa-eraser"></i></button>
+        <form method="post" action="{% url 'main' %}">
+            {% csrf_token %}
+            <input type="text" required name="item" placeholder="Add" id="in">
+            <button type="submit" id="btn"><i class="fas fa-plus"></i></button>
+        </form>
+        <a href="{% url 'clear_items' %}"><button id="btn2" class="btn2"><i class="fas fa-eraser"></i></button></a>
         <ul id="list" class="lists">
+            {% for i in data  %}
+            <li class="list">
+                {% if i.completed %}
+                <span><del>{{ i.title }}</del></span>
+                {% else %}
+                <span>{{ i.title }}</span>
+                {% endif %}
+                <span>
+                    <a href="{% url 'complete_todo' item_id=i.id %}"><i class="fas fa-check" style="margin-left: auto;
+                        margin-right: 20px;"></i></a>
+                    <a href="{% url 'tododelete' item_id=i.id %}"><i class="fas fa-trash"></i></a>
+                    <a href="{% url 'edit_todo' item_id=i.id %}"><i class="fas fa-edit"></i></a>
+                </span>
+            </li>
+            {% endfor %}
       
         </ul>
-
+            
     </div>
-</div>
-    <script src="./script.js"></script>
-
-    
+</div>  
 </body>
 </html>
